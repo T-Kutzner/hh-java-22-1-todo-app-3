@@ -1,0 +1,9 @@
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#button-delete {
+    background-color: rgba(204, 19, 42, 0.7);
+}

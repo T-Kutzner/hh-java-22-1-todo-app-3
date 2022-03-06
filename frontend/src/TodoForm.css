@@ -1,0 +1,21 @@
+.send-button {
+    margin-left: 15px;
+}
+
+.description-field {
+    margin-left: 15px;
+}
+
+#button-edit {
+    background-color: rgba(238, 177, 93, 0.6);
+}
+
+#button-send {
+    background-color: rgba(122, 217, 68, 0.6);
+}
+
+#text-input {
+    border-radius: 5px;
+    border-width: 3px;
+    height: 20px;
+}

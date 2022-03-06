@@ -1,0 +1,7 @@
+.selected {
+    text-decoration: line-through;
+}
+
+.error {
+    color: darkred;
+}
