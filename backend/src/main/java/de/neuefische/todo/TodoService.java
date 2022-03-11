@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,21 +24,31 @@ public class TodoService {
     }
 
     public Todo getTodo(String id) {
-        return todoRepository.findById(id) ;
+        Optional<Todo> todo = todoRepository.findById(id);
+        if(todo.isPresent()){
+            return todo.get();
+        }
+        return new Todo();
     }
 
     public void deleteTodo(String id) {
-        todoRepository.delete(id);
+        Optional<Todo> todo = todoRepository.findById(id);
+        if(todo.isPresent()){
+            todoRepository.delete(todo.get());
+        }
     }
 
     public void changeTodo(String id, Todo changedTodo) {
-        Todo todo = todoRepository.findById(id);
+        Optional<Todo> todo = todoRepository.findById(id);
 
-        todo.setTask(changedTodo.getTask());
-        todo.setStatus(changedTodo.getStatus());
-        todo.setDescription(changedTodo.getDescription());
+        if(todo.isPresent()) {
+            Todo todo1 = todo.get();
+            todo1.setTask(changedTodo.getTask());
+            todo1.setStatus(changedTodo.getStatus());
+            todo1.setDescription(changedTodo.getDescription());
 
-        todoRepository.save(todo);
+            todoRepository.save(todo1);
+        }
     }
 
     public void deleteCheckedTodos() {
@@ -45,6 +56,6 @@ public class TodoService {
                 .stream()
                 .filter(todo -> todo.getStatus() == TodoStatus.Done)
                 .toList()
-                .forEach(todo -> todoRepository.delete(todo.getId()));
+                .forEach(todo -> todoRepository.delete(todo));
     }
 }
