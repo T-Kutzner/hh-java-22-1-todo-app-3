@@ -1,9 +1,15 @@
-package de.neuefische.todo;
+package de.neuefische.todo.service;
 
+import de.neuefische.todo.models.Todo;
+import de.neuefische.todo.models.UserDocument;
+import de.neuefische.todo.repositories.TodoRepository;
+import de.neuefische.todo.TodoStatus;
+import de.neuefische.todo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -11,8 +17,11 @@ import java.util.Optional;
 public class TodoService {
 
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
-    public void createTodo(Todo todo) {
+    public void createTodo(Todo todo, String email) {
+        Optional<UserDocument> userDocument = userRepository.findByEmail(email);
+        todo.setUserId(userDocument.get().getId());
         todoRepository.save(todo);
     }
 
@@ -57,5 +66,13 @@ public class TodoService {
                 .filter(todo -> todo.getStatus() == TodoStatus.Done)
                 .toList()
                 .forEach(todo -> todoRepository.delete(todo));
+    }
+
+    public List<Todo> findAllByUserId(String email) {
+        Optional<UserDocument> document = userRepository.findByEmail(email);
+        if(document.isPresent()) {
+            return todoRepository.findAllByUserId(document.get().getEmail());
+        }
+        throw new IllegalArgumentException("User do not exist.");
     }
 }

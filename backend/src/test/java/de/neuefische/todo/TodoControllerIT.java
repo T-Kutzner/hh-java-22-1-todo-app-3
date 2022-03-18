@@ -1,5 +1,6 @@
 package de.neuefische.todo;
 
+import de.neuefische.todo.models.Todo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

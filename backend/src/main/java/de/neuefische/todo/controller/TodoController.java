@@ -1,14 +1,17 @@
-package de.neuefische.todo;
+package de.neuefische.todo.controller;
 
+import de.neuefische.todo.models.Todo;
+import de.neuefische.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/todos")
-@CrossOrigin
+@RequestMapping("/api/todos")
+//@CrossOrigin
 @RequiredArgsConstructor
 public class TodoController {
 
@@ -16,8 +19,9 @@ public class TodoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Collection<Todo> createTodo(@RequestBody Todo todo) {
-        todoService.createTodo(todo);
+    public Collection<Todo> createTodo(@RequestBody Todo todo, Principal principal) {
+        String email = principal.getName();
+        todoService.createTodo(todo, email);
         return todoService.getTodos();
     }
 
