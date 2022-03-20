@@ -6,6 +6,6 @@ export interface Todo {
 }
 
 export enum Status {
-    Open = 'Open',
-    Done = 'Done'
+    OPEN = 'OPEN',
+    DONE = 'DONE'
 }
