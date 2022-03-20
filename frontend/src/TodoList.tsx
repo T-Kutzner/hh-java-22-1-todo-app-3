@@ -8,14 +8,21 @@ export default function TodoList() {
 
     const [todos, setTodos] = useState([] as Array<Todo>);
     const [errorMessage, setErrorMessage] = useState("");
+    const[deleteErrorMessage, setDeleteErrorMessage] = useState('');
 
     const fetchAll = () => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/todos`)
+        const token = localStorage.getItem("token")
+        fetch(`${process.env.REACT_APP_BASE_URL}/todos`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
             .then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     return response.json();
                 }
-                throw new Error("Die ToDos konnten nicht abgerufen werden")
+                throw new Error("The ToDos could not be retrieved!")
             })
 
             .then((todosFromBackend: Array<Todo>)  => setTodos(todosFromBackend))
@@ -23,18 +30,25 @@ export default function TodoList() {
     }
 
     const deleteChecked = () => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/todos`, { method: 'DELETE' })
+        const token = localStorage.getItem("token")
+        fetch(`${process.env.REACT_APP_BASE_URL}/todos`, {
+            method: 'DELETE',
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
             .then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     return response.json();
                 }
-                throw new Error("Das ToDo konnte nicht gelöscht werden")
+                throw new Error("The ToDo could not be deleted!")
             })
             .then((todosFromBackend: Array<Todo>)  => setTodos(todosFromBackend))
             .catch(e => setErrorMessage(e.message))
     }
 
     useEffect(() => {
+        setTimeout(() => setErrorMessage(''), 10000)
         fetchAll();
     }, []);
 

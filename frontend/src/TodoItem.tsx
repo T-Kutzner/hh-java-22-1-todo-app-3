@@ -16,27 +16,37 @@ export default function TodoItem(props: TodoItemProps) {
     const [errorMessage, setErrorMessage] = useState("");
 
     const deleteTodo = () => {
+        const token = localStorage.getItem("token")
         fetch(`${process.env.REACT_APP_BASE_URL}/todos/${props.todo.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                "Authorization": "Bearer " + token}
         })
         .then(response => {
                 if(response.status >= 200 && response.status < 300) {
                     return response.json();
                 }
-                throw new Error("Das ToDo konnte nicht gelöscht werden");
+                throw new Error("The ToDo could not be deleted!");
             })
         .then(() => props.onTodoDeletion())
         .catch(e => setErrorMessage(e.message));
     };
 
-    const fetchToEdit = (todo: Todo) => {
+    const editTodo = () => {
+        const token = localStorage.getItem("token")
         fetch(`${process.env.REACT_APP_BASE_URL}/todos/${props.todo.id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token
             },
-            body: JSON.stringify(todo)
+            body: JSON.stringify({
+            "id": props.todo.id,
+            "task": taskToEdit,
+            "description": descriptionToEdit,
+            "status": props.todo.status
         })
+    })
         .then(response => {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
@@ -50,23 +60,31 @@ export default function TodoItem(props: TodoItemProps) {
         .catch(e => setErrorMessage(e.message));
     }
 
-    const editTodo = () => {
-        fetchToEdit({
-            id: props.todo.id,
-            task: taskToEdit,
-            description: descriptionToEdit,
-            status: props.todo.status
-        });
-    }
-
     const toggle = () => {
-        const newStatus = props.todo.status === Status.Open ? Status.Done : Status.Open;
-        fetchToEdit({
-            id: props.todo.id,
-            task: props.todo.task,
-            description: props.todo.description,
-            status: newStatus
-        });
+        const token = localStorage.getItem("token")
+        const newStatus = props.todo.status === Status.OPEN ? Status.DONE : Status.OPEN;
+        fetch(`${process.env.REACT_APP_BASE_URL}/todos/${props.todo.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+            "id": props.todo.id,
+            "task": props.todo.task,
+            "description": props.todo.description,
+            "status": newStatus
+        })
+    })
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new Error("There is nothing to change!")
+
+            })
+            .then((todosFromBackend: Array<Todo>) => props.onTodoChange(todosFromBackend))
+            .catch(e => setErrorMessage(e.message))
     }
 
     return (
@@ -88,7 +106,7 @@ export default function TodoItem(props: TodoItemProps) {
                 </div>
                 :
                 <div>
-                    <span className={props.todo.status === Status.Done ? 'selected': ''}
+                    <span className={props.todo.status === Status.DONE ? 'selected': ''}
                           onClick={toggle}>
                         {props.todo.task}: {props.todo.description}
                     </span>
