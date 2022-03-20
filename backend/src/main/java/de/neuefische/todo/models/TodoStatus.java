@@ -1,6 +1,6 @@
-package de.neuefische.todo;
+package de.neuefische.todo.models;
 
 public enum TodoStatus {
-    Open,
-    Done
+    OPEN,
+    DONE
 }

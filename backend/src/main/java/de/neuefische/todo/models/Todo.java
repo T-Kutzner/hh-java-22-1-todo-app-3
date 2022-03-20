@@ -1,6 +1,5 @@
 package de.neuefische.todo.models;
 
-import de.neuefische.todo.TodoStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -15,7 +14,7 @@ public class Todo implements Comparable<Todo> {
     private String id;
     private String task = "";
     private String description = "";
-    private TodoStatus status = TodoStatus.Open;
+    private TodoStatus status = TodoStatus.OPEN;
     private String userId;
 
     public Todo(String task) {
@@ -26,7 +25,7 @@ public class Todo implements Comparable<Todo> {
     public int compareTo(Todo todo) {
         if (status == todo.getStatus()) {
             return 0;
-        } else if (status == TodoStatus.Open) {
+        } else if (status == TodoStatus.OPEN) {
             return -1;
         }
         return 1;

@@ -11,23 +11,21 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/todos")
-//@CrossOrigin
 @RequiredArgsConstructor
 public class TodoController {
 
     private final TodoService todoService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Collection<Todo> createTodo(@RequestBody Todo todo, Principal principal) {
-        String email = principal.getName();
-        todoService.createTodo(todo, email);
-        return todoService.getTodos();
+    //@ResponseStatus(HttpStatus.CREATED)
+    public Collection<Todo> addTodo(@RequestBody Todo todo, Principal principal) {
+        todoService.addTodo(todo, principal);
+        return todoService.getTodos(principal);
     }
 
     @GetMapping
-    public Collection<Todo> getTodos() {
-        return todoService.getTodos();
+    public Collection<Todo> getTodos(Principal principal) {
+        return todoService.getTodos(principal);
     }
 
     @GetMapping("/{id}")
@@ -36,19 +34,19 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public Collection<Todo> changeTodo(@PathVariable String id, @RequestBody Todo todo) {
+    public Collection<Todo> changeTodo(@PathVariable String id, @RequestBody Todo todo, Principal principal) {
         todoService.changeTodo(id, todo);
-        return todoService.getTodos();
+        return todoService.getTodos(principal);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTodo(@PathVariable String id) {
-        todoService.deleteTodo(id);
+    public void deleteTodo(@PathVariable String id, Principal principal) {
+        todoService.deleteTodo(id, principal);
     }
 
     @DeleteMapping()
-    public Collection<Todo> deleteTodo() {
+    public Collection<Todo> deleteTodo(Principal principal) {
         todoService.deleteCheckedTodos();
-        return todoService.getTodos();
+        return todoService.getTodos(principal);
     }
 }

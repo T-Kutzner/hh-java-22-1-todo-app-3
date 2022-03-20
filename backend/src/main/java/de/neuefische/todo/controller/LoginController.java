@@ -30,7 +30,8 @@ public class LoginController {
     @PostMapping
     public String login(@RequestBody LoginData loginData) {
         try {
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("roles", getRoles(auth));
